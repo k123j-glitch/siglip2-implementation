@@ -14,3 +14,4 @@ peft
 scipy
 scikit-learn
 Pillow
+tensorboard
