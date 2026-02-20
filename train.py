@@ -48,7 +48,7 @@ def train():
         T_max=total_steps
     )
 
-    scaler = torch.cuda.amp.GradScaler()
+    scaler = torch.amp.GradScaler()
 
     # -----------------------
     # TensorBoard Setup
@@ -78,7 +78,7 @@ def train():
 
             optimizer.zero_grad(set_to_none=True)
 
-            with torch.amp.GradScaler():
+            with torch.cuda.amp.autocast():
                 logits = model(images, input_ids)
                 loss = siglip1_loss(logits)
 
