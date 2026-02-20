@@ -79,8 +79,8 @@ def train():
             optimizer.zero_grad(set_to_none=True)
 
             with torch.amp.autocast("cuda"):
-                logits = model(images, input_ids)
-                loss = siglip2_loss(logits)
+                outputs = model(images, input_ids)
+                loss = siglip2_loss(model, outputs, images)
 
             scaler.scale(loss).backward()
 

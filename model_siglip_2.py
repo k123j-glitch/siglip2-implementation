@@ -222,16 +222,23 @@ class SigLIP2(nn.Module):
 
 def siglip2_loss(model,
                  outputs,
+                 images,
                  caption_ids=None):
 
     logits = outputs["logits"]
     n = logits.size(0)
 
+    # --------------------------------
+    # Contrastive Sigmoid Loss
+    # --------------------------------
     labels = 2 * torch.eye(n, device=logits.device) - 1
     contrastive = -F.logsigmoid(labels * logits).mean()
 
     total = contrastive
 
+    # --------------------------------
+    # Captioning Loss (optional)
+    # --------------------------------
     if caption_ids is not None:
         cap_logits = outputs["caption_logits"]
         caption_loss = F.cross_entropy(
@@ -241,11 +248,11 @@ def siglip2_loss(model,
         )
         total += caption_loss
 
-    # Distillation
+    # --------------------------------
+    # Vision Distillation (FIXED)
+    # --------------------------------
     with torch.no_grad():
-        teacher_tokens = model.teacher(
-            outputs["image_tokens"]
-        )
+        teacher_tokens = model.teacher(images)  # ✅ PASS IMAGES
 
     distill = F.mse_loss(
         outputs["image_tokens"],
