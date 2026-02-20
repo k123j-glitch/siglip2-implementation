@@ -78,7 +78,7 @@ def train():
 
             optimizer.zero_grad(set_to_none=True)
 
-            with torch.amp.autocast():
+            with torch.amp.GradScaler():
                 logits = model(images, input_ids)
                 loss = siglip1_loss(logits)
 
